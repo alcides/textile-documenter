@@ -70,5 +70,4 @@ task :generate_docs do
   end
 end
 
-task :default => :generate_docs do
-end
+task :default => :generate_docs
