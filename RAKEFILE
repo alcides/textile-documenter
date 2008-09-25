@@ -1,10 +1,61 @@
 require "RedCloth"
+require 'find'
+require 'ftools'
+require 'fileutils'
+
+
+$output_folder = "html"
+
+
+def convert_to_textile(src)
+  puts "Converting #{src}"
+  puts $output_folder + "/" + src.sub('.textile', '.html')
+
+  #out = File.open( $output_folder + "/" + src.sub('.textile', '.html'),File::WRONLY|File::TRUNC|File::CREAT)
+
+  src_file = File.open(src)
+  textiled = RedCloth.new src_file.read
+  puts textiled.to_html
+  
+end
 
 
 task :compile do
-  t = "*teste*"
-  r = RedCloth.new t
-  puts "compiling" + r.to_html
+  
+  if not Dir.entries(".").include? "html"
+    Dir.mkdir $output_folder
+    puts "Creating #{$output_folder} directory"
+  end
+
+  d = Dir.new $output_folder
+  
+  # delete all files from destiny
+  d.each do |file|
+    fullfile = File.expand_path(file, d.path)
+    
+    next if file == '.' or file == '..'
+    FileUtils.rm_rf fullfile,  :verbose => true
+  end
+  
+  
+  
+  Find.find('./docs/') do |f|
+    if f.include? ".textile"
+      #convert_to_textile f
+    else
+      
+      copy_file = File.expand_path("#{$output_folder}/#{f}")
+      
+      if File.directory? f
+        puts "Creating #{copy_file}"
+        File.makedirs copy_file
+      else
+        puts "Copying #{copy_file}"
+        File.copy(f, copy_file)    
+      end
+    
+    end
+  end
 end
 
 task :default => :compile do
