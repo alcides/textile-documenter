@@ -7,15 +7,17 @@ require 'fileutils'
 $output_folder = "html"
 
 
-def convert_to_textile(src)
+def convert_to_textile(src,dest)
   puts "Converting #{src}"
   puts $output_folder + "/" + src.sub('.textile', '.html')
 
-  #out = File.open( $output_folder + "/" + src.sub('.textile', '.html'),File::WRONLY|File::TRUNC|File::CREAT)
+  dest_file = File.open( dest.sub('.textile', '.html') ,"w")
 
   src_file = File.open(src)
   textiled = RedCloth.new src_file.read
-  puts textiled.to_html
+  src_file.close
+  dest_file.write textiled.to_html
+  dest_file.close
   
 end
 
@@ -40,11 +42,11 @@ task :compile do
   
   
   Find.find('./docs/') do |f|
+    copy_file = File.expand_path("#{$output_folder}/#{f}")
+    
     if f.include? ".textile"
-      #convert_to_textile f
+      convert_to_textile f,copy_file
     else
-      
-      copy_file = File.expand_path("#{$output_folder}/#{f}")
       
       if File.directory? f
         puts "Creating #{copy_file}"
