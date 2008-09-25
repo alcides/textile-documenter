@@ -6,7 +6,7 @@ require "erb"
 
 $title = "Example"
 $output_folder = "html" # Export folder for converted files
-$template = "docs_templates/clean.rhtml"
+$template = "docs_templates/clean.html.erb"
 
 def convert_to_textile(src,dest)
   
