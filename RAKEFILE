@@ -5,6 +5,7 @@ require 'fileutils'
 require "erb"
 
 $title = "Example"
+$input_folder = "docs"
 $output_folder = "html" # Export folder for converted files
 $template = "docs_templates/clean.html.erb"
 
@@ -51,7 +52,7 @@ task :generate_docs do
   
   
   
-  Find.find('./docs/') do |f|
+  Find.find("./#{$input_folder}/") do |f|
     copy_file = File.expand_path("#{$output_folder}/#{f}")
     
     if f.include? ".textile"
