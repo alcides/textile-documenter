@@ -4,7 +4,7 @@ require 'ftools'
 require 'fileutils'
 require "erb"
 
-
+$title = "Example"
 $output_folder = "html" # Export folder for converted files
 $template = "docs_templates/clean.rhtml"
 
@@ -21,7 +21,7 @@ def convert_to_textile(src,dest)
   template_file.close
   
   content = textiled.to_html
-  title="Alcides"
+  title=$title
 
   html = ERB.new(template).result(binding)
   
