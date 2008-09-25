@@ -2,31 +2,41 @@ require "RedCloth"
 require 'find'
 require 'ftools'
 require 'fileutils'
+require "erb"
 
 
-$output_folder = "html"
-
+$output_folder = "html" # Export folder for converted files
+$template = "docs_templates/clean.rhtml"
 
 def convert_to_textile(src,dest)
-  puts "Converting #{src}"
-  puts $output_folder + "/" + src.sub('.textile', '.html')
-
-  dest_file = File.open( dest.sub('.textile', '.html') ,"w")
+  
+  puts "Converting #{src}" if Rake.application.options.trace
 
   src_file = File.open(src)
   textiled = RedCloth.new src_file.read
   src_file.close
-  dest_file.write textiled.to_html
+  
+  template_file = File.open($template)
+  template = template_file.read
+  template_file.close
+  
+  content = textiled.to_html
+  title="Alcides"
+
+  html = ERB.new(template).result(binding)
+  
+  dest_file = File.open( dest.sub('.textile', '.html') ,"w")
+  dest_file.write html
   dest_file.close
   
 end
 
 
-task :compile do
+task :generate_docs do
   
   if not Dir.entries(".").include? "html"
     Dir.mkdir $output_folder
-    puts "Creating #{$output_folder} directory"
+    puts "Creating #{$output_folder} directory" if Rake.application.options.trace
   end
 
   d = Dir.new $output_folder
@@ -36,7 +46,7 @@ task :compile do
     fullfile = File.expand_path(file, d.path)
     
     next if file == '.' or file == '..'
-    FileUtils.rm_rf fullfile,  :verbose => true
+    FileUtils.rm_rf fullfile,  :verbose => Rake.application.options.trace
   end
   
   
@@ -49,10 +59,10 @@ task :compile do
     else
       
       if File.directory? f
-        puts "Creating #{copy_file}"
+        puts "Creating #{copy_file}" if Rake.application.options.trace
         File.makedirs copy_file
       else
-        puts "Copying #{copy_file}"
+        puts "Copying #{copy_file}" if Rake.application.options.trace
         File.copy(f, copy_file)    
       end
     
@@ -60,5 +70,5 @@ task :compile do
   end
 end
 
-task :default => :compile do
+task :default => :generate_docs do
 end
