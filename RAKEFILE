@@ -1,0 +1,11 @@
+require "RedCloth"
+
+
+task :compile do
+  t = "*teste*"
+  r = RedCloth.new t
+  puts "compiling" + r.to_html
+end
+
+task :default => :compile do
+end
