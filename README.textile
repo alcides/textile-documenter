@@ -1,6 +1,6 @@
 h1. Textile Documenter
 
-This project comes as the solution to the lack of a text-based document solution. LaTeX is not my favorite flavor, and HTML rocks since it can be printed or used on the web. Writing HTML sucks. Textile eases that out.
+This project comes as the solution to the lack of a text-based document solution. LaTeX is not my favorite flavor, and HTML rocks since it can be printed or used on the web and the internet. Writing HTML sucks. Textile eases that out.
 
 
 So you can edit the RAKEFILE so you can change the documentation folder, the output folder, the tittle and the template used.
